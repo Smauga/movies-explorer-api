@@ -1,16 +1,16 @@
 const express = require('express');
 const helmet = require("helmet");
 const cookieParser = require('cookie-parser');
-
-const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { handleError } = require('./errors/handleError');
+const limiter = require('./utils/rateLimiter');
 const cors = require('./middlewares/cors');
 const routes = require('./routes/index');
 
+const app = express();
 require('dotenv').config();
 
 const { PORT = 3000, NODE_ENV, DATABASE } = process.env;
@@ -20,6 +20,7 @@ app.use(helmet());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(limiter);
 
 mongoose.connect(dataBase);
 
