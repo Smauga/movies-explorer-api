@@ -1,7 +1,7 @@
 const Movie = require('../models/movie');
 const NotFoundError = require('../errors/NotFoundError');
-const AccessError = require('../errors/AccessError');
-const DataError = require('../errors/DataError');
+const ForbiddenError = require('../errors/ForbiddenError');
+const BadRequestError = require('../errors/BadRequestError');
 
 const getMovies = (req, res, next) => {
   Movie.find({ owner: req.user._id })
@@ -30,13 +30,13 @@ const createMovie = (req, res, next) => {
     image,
     trailerLink,
     thumbnail,
-    owner: id,
+    owner: req.user._id,
     movieId,
     nameRU,
     nameEN, })
     .then((movie) => res.send(movie))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') next(new DataError('Некорректные данные'));
+      if (err.name === 'ValidationError' || err.name === 'CastError') next(new BadRequestError('Некорректные данные'));
       next(err);
     });
 };
@@ -45,13 +45,13 @@ const deleteMovie = (req, res, next) => {
   Movie.findById(req.params.movieId)
     .orFail(() => new NotFoundError('Нет карточки по заданному id'))
     .then((movie) => {
-      if (req.user._id !== movie.owner.toString()) throw new AccessError('Невозможно удалить чужой фильм');
-      Movie.findByIdAndRemove(req.params.cardId)
+      if (req.user._id !== movie.owner.toString()) throw new ForbiddenError('Невозможно удалить чужой фильм');
+      Movie.findByIdAndRemove(req.params.movieId)
         .then((deletedMovie) => res.send(deletedMovie))
         .catch(next);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') next(new DataError('Некорректный id фильма'));
+      if (err.name === 'ValidationError' || err.name === 'CastError') next(new BadRequestError('Некорректный id фильма'));
       next(err);
     });
 };

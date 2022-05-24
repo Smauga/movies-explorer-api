@@ -1,9 +1,9 @@
 const { isURL } = require('validator');
-const DataError = require('../errors/DataError');
+const BadRequestError = require('../errors/BadRequestError');
 
 const validateURL = (value) => {
   if (!isURL(value, { require_protocol: true })) {
-    throw new DataError('Неправильный формат ссылки');
+    throw new BadRequestError('Неправильный формат ссылки');
   }
   return value;
 };
