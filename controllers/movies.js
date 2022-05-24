@@ -11,7 +11,8 @@ const getMovies = (req, res, next) => {
 };
 
 const createMovie = (req, res, next) => {
-  const { country,
+  const {
+    country,
     director,
     duration,
     year,
@@ -21,9 +22,11 @@ const createMovie = (req, res, next) => {
     thumbnail,
     movieId,
     nameRU,
-    nameEN } = req.body;
+    nameEN,
+  } = req.body;
 
-  Movie.create({ country,
+  Movie.create({
+    country,
     director,
     duration,
     year,
@@ -34,7 +37,8 @@ const createMovie = (req, res, next) => {
     owner: req.user._id,
     movieId,
     nameRU,
-    nameEN, })
+    nameEN,
+  })
     .then((movie) => res.send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') next(new BadRequestError(badRequestMessage));

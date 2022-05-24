@@ -4,7 +4,9 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
 const BadRequestError = require('../errors/BadRequestError');
-const { badRequestMessage, notFoundUserMessage, conflictEmailMessage, signOutMessage } = require('../utils/constants');
+const {
+  badRequestMessage, notFoundUserMessage, conflictEmailMessage, signOutMessage,
+} = require('../utils/constants');
 
 require('dotenv').config();
 
@@ -41,7 +43,7 @@ const createUser = (req, res, next) => {
         .then((user) => res.send(
           {
             name: user.name,
-            email: user.email
+            email: user.email,
           },
         ))
         .catch((err) => {
@@ -64,23 +66,25 @@ const login = (req, res, next) => {
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
-        sameSite: true
+        sameSite: true,
       })
-      .send(
-        {
-          name: user.name,
-          email: user.email
-        },
-      );
+        .send(
+          {
+            name: user.name,
+            email: user.email,
+          },
+        );
     })
     .catch(next);
 };
 
 const logout = (req, res, next) => {
   User.findById(req.user._id)
-  .orFail(() => new NotFoundError(notFoundUserMessage))
-  .then(() => res.clearCookie('jwt').send({ message: signOutMessage }))
-  .catch(next);
+    .orFail(() => new NotFoundError(notFoundUserMessage))
+    .then(() => res.clearCookie('jwt').send({ message: signOutMessage }))
+    .catch(next);
 };
 
-module.exports = { getMe, updateMe, createUser, login, logout };
+module.exports = {
+  getMe, updateMe, createUser, login, logout,
+};

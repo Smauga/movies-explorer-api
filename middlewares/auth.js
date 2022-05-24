@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
     const jwtSecret = NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret';
     const token = req.cookies.jwt;
 
-    if(!token) throw new UnauthorizedError(unauthorizedMessage);
+    if (!token) throw new UnauthorizedError(unauthorizedMessage);
 
     let payload;
 
