@@ -4,6 +4,8 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
 const BadRequestError = require('../errors/BadRequestError');
+const { badRequestMessage, notFoundUserMessage, conflictEmailMessage, signOutMessage } = require('../utils/constants');
+
 require('dotenv').config();
 
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -21,12 +23,12 @@ const updateMe = (req, res, next) => {
     new: true,
     runValidators: true,
   })
-    .orFail(() => new NotFoundError('Пользователь не существует'))
+    .orFail(() => new NotFoundError(notFoundUserMessage))
     .then((user) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') next(new BadRequestError('Некорректные данные'));
+      if (err.name === 'ValidationError' || err.name === 'CastError') next(new BadRequestError(badRequestMessage));
       next(err);
     });
 };
@@ -43,8 +45,8 @@ const createUser = (req, res, next) => {
           },
         ))
         .catch((err) => {
-          if (err.code === 11000) next(new ConflictError('Пользователь с данным e-mail уже существует'));
-          if (err.name === 'ValidationError' || err.name === 'CastError') next(new BadRequestError('Некорректные данные'));
+          if (err.code === 11000) next(new ConflictError(conflictEmailMessage));
+          if (err.name === 'ValidationError' || err.name === 'CastError') next(new BadRequestError(badRequestMessage));
         });
     })
     .catch(next);
@@ -76,8 +78,8 @@ const login = (req, res, next) => {
 
 const logout = (req, res, next) => {
   User.findById(req.user._id)
-  .orFail(() => new NotFoundError('Пользователь не существует'))
-  .then(() => res.clearCookie('jwt').send({ "message": "Выполнен выход из аккаунта" }))
+  .orFail(() => new NotFoundError(notFoundUserMessage))
+  .then(() => res.clearCookie('jwt').send({ message: signOutMessage }))
   .catch(next);
 };
 

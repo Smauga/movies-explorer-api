@@ -12,6 +12,8 @@ const { login, logout, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const cors = require('./middlewares/cors');
 const NotFoundError = require('./errors/NotFoundError');
+const { notFoundAddressMessage } = require('./utils/constants');
+
 require('dotenv').config();
 
 const { PORT = 3000, NODE_ENV, DATABASE } = process.env;
@@ -45,7 +47,7 @@ app.use(auth);
 app.post('/signout', logout);
 app.use('/users', require('./routes/users'));
 app.use('/movies', require('./routes/movies'));
-app.use((req, res, next) => next(new NotFoundError('Адрес не существует')));
+app.use((req, res, next) => next(new NotFoundError(notFoundAddressMessage)));
 
 app.use(errorLogger);
 app.use(errors());
