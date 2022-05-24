@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require("helmet");
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -15,6 +16,7 @@ require('dotenv').config();
 const { PORT = 3000, NODE_ENV, DATABASE } = process.env;
 const dataBase = NODE_ENV === 'production' ? DATABASE : 'dev-secret';
 
+app.use(helmet());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
