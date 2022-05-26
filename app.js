@@ -14,7 +14,8 @@ const app = express();
 require('dotenv').config();
 
 const { PORT = 3000, NODE_ENV, DATABASE } = process.env;
-const dataBase = NODE_ENV === 'production' ? DATABASE : 'dev-secret';
+const dataBaseDev = 'mongodb://localhost:27017/moviesdbdev';
+const dataBase = NODE_ENV === 'production' ? DATABASE : dataBaseDev;
 
 app.use(helmet());
 app.use(cookieParser());
