@@ -21,13 +21,12 @@ app.use(helmet());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(requestLogger);
 app.use(limiter);
 
 mongoose.connect(dataBase);
 
-app.use(requestLogger);
 app.use(cors);
-
 app.use(routes);
 
 app.use(errorLogger);
