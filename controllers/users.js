@@ -30,8 +30,9 @@ const updateMe = (req, res, next) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') next(new BadRequestError(badRequestMessage));
-      next(err);
+      if (err.code === 11000) next(new ConflictError(conflictEmailMessage));
+      else if (err.name === 'ValidationError' || err.name === 'CastError') next(new BadRequestError(badRequestMessage));
+      else next(err);
     });
 };
 
@@ -48,7 +49,8 @@ const createUser = (req, res, next) => {
         ))
         .catch((err) => {
           if (err.code === 11000) next(new ConflictError(conflictEmailMessage));
-          if (err.name === 'ValidationError' || err.name === 'CastError') next(new BadRequestError(badRequestMessage));
+          else if (err.name === 'ValidationError' || err.name === 'CastError') next(new BadRequestError(badRequestMessage));
+          else next(err);
         });
     })
     .catch(next);

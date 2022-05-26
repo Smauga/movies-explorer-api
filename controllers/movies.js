@@ -42,7 +42,7 @@ const createMovie = (req, res, next) => {
     .then((movie) => res.send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') next(new BadRequestError(badRequestMessage));
-      next(err);
+      else next(err);
     });
 };
 
@@ -57,7 +57,7 @@ const deleteMovie = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') next(new BadRequestError(badRequestMessage));
-      next(err);
+      else next(err);
     });
 };
 
